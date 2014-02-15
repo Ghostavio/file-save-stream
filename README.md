@@ -1,5 +1,7 @@
 # Save file
 
+[![Build Status](https://travis-ci.org/chilijung/file-save.png)](https://travis-ci.org/chilijung/file-save)
+
 Just save the file!!!! Auto create folder path and just save the file.
 
 ## Install
