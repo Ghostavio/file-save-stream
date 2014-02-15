@@ -5,12 +5,12 @@ var fs = require('fs'),
 module.exports = function(file_path, data, options, cb) {
 
   if(arguments.length < 4) {
-		file_path = file_path;
-		data = data;
-		cb = arguments[2];
-		options = null;
+    file_path = file_path;
+    data = data;
+    cb = arguments[2];
+    options = null;
   }else if (arguments.length < 3) {
-  	throw Error('Arguments should be three or four.')
+    throw Error('Arguments should be three or four.')
   } 
   dir_url= path.dirname(file_path)
   // origin file path
@@ -18,7 +18,7 @@ module.exports = function(file_path, data, options, cb) {
   // folder path
   dir_path = path.resolve(dir_url);
   _create_fs(dir_path, function() {
-  	_file_write(ori_path, data, options, cb)
+    _file_write(ori_path, data, options, cb)
   })
 }
 
@@ -31,9 +31,9 @@ function _create_fs(fp, cb) {
 }
 
 function _file_write(dir, data, opt, cb) {
-	fs.writeFile(dir, data, opt, function(err) {
+  fs.writeFile(dir, data, opt, function(err) {
     if(err)
-    	throw Error(err)
-	  cb(null)
+      throw Error(err)
+    cb(null)
   })
 }
