@@ -7,7 +7,7 @@ module.exports = function(file_path, data, options, cb) {
   if(arguments.length < 4) {
     file_path = file_path;
     data = data;
-    cb = arguments[2];
+    cb = options
     options = null;
   }else if (arguments.length < 3) {
     throw Error('Arguments should be three or four.')
