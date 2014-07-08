@@ -1,39 +1,70 @@
 var fs = require('fs'),
   path = require('path'),
-  mkdirp = require('mkdirp');
+  mkdirp = require('mkdirp'),
+  _savefs = savefs,
+  savefs = {};
 
-module.exports = function(file_path, data, options, cb) {
+module.exports = function(file, opts) {
 
-  if(arguments.length < 4) {
-    file_path = file_path;
-    data = data;
-    cb = options
-    options = null;
-  }else if (arguments.length < 3) {
-    throw Error('Arguments should be three or four.')
-  } 
-  dir_url= path.dirname(file_path)
+  dir_name= path.dirname(file)
   // origin file path
-  ori_path = path.resolve(file_path);
+  ori_path = path.resolve(file);
   // folder path
-  dir_path = path.resolve(dir_url);
-  _create_fs(dir_path, function() {
-    _file_write(ori_path, data, options, cb)
-  })
+  dir_path = path.resolve(dir_name);
+
+  savefs._create_dir(dir_path, opts)
+  
+  return savefs.wstream(ori_path)
 }
 
-function _create_fs(fp, cb) {
-  mkdirp(fp, function (err) {
-    if (err) 
-      throw Error(err)
-    cb();
-  })
+savefs._create_dir = function (fp, opts) {
+  mkdirp.sync(fp, opts);
 }
 
-function _file_write(dir, data, opt, cb) {
-  fs.writeFile(dir, data, opt, function(err) {
-    if(err)
-      throw Error(err)
-    cb(null)
-  })
+savefs.wstream = function (file) {
+  var ws = fs.createWriteStream(file);
+  this.writer = ws;
+  return this;
 }
+
+// chaining write method
+savefs.write = function(chunk, encoding, cb) {
+  if(arguments.length === 3) {
+    this.writer.write(chunk, encoding, cb);
+  }else if(arguments.length === 2 && typeof arguments[1] === 'function') {
+    cb = encoding;
+    encoding = null;
+    this.writer.write(chunk, cb);
+  }else if(arguments.length === 2 && typeof arguments[1] !== 'function') {
+    this.writer.write(chunk, encoding)
+  }else {
+    this.writer.write(chunk)
+  }
+
+  return this;
+}
+
+// chaining end method
+savefs.end = function(chunk, encoding, cb) {
+  if(arguments.length === 3) {
+    this.writer.end(chunk, encoding, cb);
+  }else if(arguments.length === 2 && typeof arguments[1] === 'function') {
+    cb = encoding;
+    encoding = null;
+    this.writer.end(chunk, cb);
+  }else if(arguments.length === 2 && typeof arguments[1] !== 'function') {
+    this.writer.end(chunk, encoding)
+  }else {
+    this.writer.end(chunk)
+  }
+
+  return this;
+}
+
+savefs.finish = function(cb) {
+  this.writer.on('finish', cb);
+}
+
+savefs.error = function(cb) {
+  this.writer.on('error', cb);
+} 

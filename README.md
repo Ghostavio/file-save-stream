@@ -1,8 +1,8 @@
-# Save file
+# Streaming saving file
 
 [![Build Status](https://travis-ci.org/chilijung/file-save.png)](https://travis-ci.org/chilijung/file-save)
 
-Just save the file!!!! Auto create folder path and just save the file.
+Streaming data to file and save it using Stream.(the module will make directory itself if the directory is not exist).
 
 ## Install
 
@@ -10,26 +10,57 @@ Just save the file!!!! Auto create folder path and just save the file.
 npm install file-save
 ```
 
-## API
-
-- Arguments
-  - file path (can with folder path that is not exist)
-  - data (data you want to save)
-  - option (optional) see details : http://nodejs.org/api/fs.html#fs_fs_writefile_filename_data_options_callback, the options is the same as fs.writefile `options`
-  - callback (you can call a callback function)
-
-```javascript
-fileSave(<the file path (and with folder path that is not exist)>, data, option, callback)
-```
-
 ## Example
 
 ```javascript
-fileSave('sample/test', 'this is a test', function() {
-  console.log('Just create the file please!!!!')
-}
+var fileSave = require('file-save');
+
+// the first line will create a writeStream to the file path
+fileSave('sample/test')
+    .write('this is the first line', 'utf8')
+    .write('this is the second line', 'utf8', function() {
+        console.log('writer callback')
+    })
+    .end('this is the end')
+    .error(function() {
+        console.log('error goes here')
+    })
+    .finish(function() {
+        console.log('write finished.')
+    })
 ```
 
+## Usage
+
+```
+fileSave(<filename>)
+```
+
+`file-save` module will build a write stream to the file, and automatically make directory if the directory is not exist and need to create.
+
+## Chaining methods
+
+#### .write(chunk, [encoding], [callbak])
+
+- chunk (string)
+- encoding (string): like the encoding settings in writeable stream. http://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback 
+- callback (function): callback function settings in writeable http://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
+
+#### .end([string], [encoding], [callback])
+
+Same as `.write` method, but string is also optional.
+
+#### .error(callback)
+
+You can make a callback, while the stream prompt error
+
+see more: http://nodejs.org/api/stream.html#stream_event_error_1
+
+#### .finish(callback)
+
+Make a callback while finished, **using this method you have to call ** `.foot` **before calling this method**
+
+see more: http://nodejs.org/api/stream.html#stream_event_finish
 
 ## License
 

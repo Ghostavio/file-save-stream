@@ -4,20 +4,16 @@ var fileSave = require('./');
 
 describe('should save the file test', function() {
   it('should save to sample folder', function(cb) {
-    fileSave('sample/test', 'hello world', function(result) {
-      should.not.exist(result); 
-      cb();
-    })
+    // the first line will create a writeStream to the file path
+    fileSave('sample/test')
+        .write('this is the first line\n', 'utf8')
+        .write('this is the second line\n', 'utf8', function() {
+            console.log('writer callback')
+        })
+        .end('this is the end\n')
+        .finish(function() {
+            cb();
+        })
   })
-
-  it('should read the data in sample/test', function(cb) {
-    fs.readFile(__dirname + '/sample/test', {encoding: 'utf-8'}, function(err, data) {
-      if(err)
-        throw err; 
-      data.should.equal('hello world');
-      cb()
-    })
-  })
-
 
 })
