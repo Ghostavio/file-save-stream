@@ -58,7 +58,7 @@ see more: http://nodejs.org/api/stream.html#stream_event_error_1
 
 #### .finish(callback)
 
-Make a callback while finished, **using this method you have to call ** `.end` **before calling this method**
+Make a callback while finished, **using this method you have to call  .end before calling this method**
 
 see more: http://nodejs.org/api/stream.html#stream_event_finish
 
