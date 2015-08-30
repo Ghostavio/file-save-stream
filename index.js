@@ -6,14 +6,14 @@ var fs = require('fs'),
 
 module.exports = function(file, opts) {
 
-  dir_name= path.dirname(file)
+  dir_name = path.dirname(file)
   // origin file path
   ori_path = path.resolve(file);
   // folder path
   dir_path = path.resolve(dir_name);
 
   savefs._create_dir(dir_path, opts)
-  
+
   return savefs.wstream(ori_path)
 }
 
@@ -67,4 +67,4 @@ savefs.finish = function(cb) {
 
 savefs.error = function(cb) {
   this.writer.on('error', cb);
-} 
+}
